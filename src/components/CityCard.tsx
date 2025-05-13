@@ -6,6 +6,7 @@ const CityCardView = styled.div`
   position: relative;
   border-radius: 15px;
   overflow: hidden;
+  cursor: pointer;
 `;
 
 const Content = styled.div`
@@ -63,11 +64,12 @@ const P = styled.p`
 
 interface Props {
   city: City;
+  onClick: () => void;
 }
 
 export const CityCard = (props: Props) => {
   return (
-    <CityCardView>
+    <CityCardView onClick={props.onClick}>
       <ImageSkeleton src={props.city.image} alt={props.city.name} />
       <Content>
         <OverlayText />
