@@ -1,0 +1,68 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+.out/
+.next/
+.expo/
+.expo-shared/
+coverage/
+tmp/
+temp/
+
+# React Native
+android/
+ios/
+*.keystore
+*.jks
+
+# Expo and React Native specific
+.expo/
+.expo-shared/
+web-build/
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Mac OS specific
+.DS_Store
+*.DS_Store
+
+# Backup files
+*.bak
+*.swp
+
+# Dependency directories
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
