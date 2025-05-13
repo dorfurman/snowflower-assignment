@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/snowflower-assignment/static/css/main.b69031e7.css",
-    "main.js": "/snowflower-assignment/static/js/main.814a8ab5.js",
+    "main.js": "/snowflower-assignment/static/js/main.0547f14a.js",
     "static/media/cold-weather.png": "/snowflower-assignment/static/media/cold-weather.46c46a838c0708ddf302.png",
     "static/media/rainy-weather.png": "/snowflower-assignment/static/media/rainy-weather.767eca96b54323d97f18.png",
     "static/media/sunny-weather.png": "/snowflower-assignment/static/media/sunny-weather.3bd0c27932f8cbdc3545.png",
     "index.html": "/snowflower-assignment/index.html",
     "main.b69031e7.css.map": "/snowflower-assignment/static/css/main.b69031e7.css.map",
-    "main.814a8ab5.js.map": "/snowflower-assignment/static/js/main.814a8ab5.js.map"
+    "main.0547f14a.js.map": "/snowflower-assignment/static/js/main.0547f14a.js.map"
   },
   "entrypoints": [
     "static/css/main.b69031e7.css",
-    "static/js/main.814a8ab5.js"
+    "static/js/main.0547f14a.js"
   ]
 }
