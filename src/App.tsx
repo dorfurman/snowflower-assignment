@@ -6,16 +6,6 @@ const AppView = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-  }
-
-  html, body {
-    padding: 0;
-  }
 `;
 
 export const App = () => {
