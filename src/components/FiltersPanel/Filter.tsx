@@ -26,6 +26,7 @@ export const Filter = (props: Props) => {
     <FilterView>
       <h3>Continent</h3>
       <Select value={continent} onChange={(e) => setContinent(e.target.value)}>
+        <option value="">Everywhere</option>
         {props.continents.map((continent) => (
           <option key={continent} value={continent}>
             {continent}

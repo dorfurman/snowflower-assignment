@@ -1,17 +1,12 @@
 import { styled } from "styled-components";
 import { Filter } from "./Filter";
 import { Search } from "./Search";
-import { useState } from "react";
+import { SortBy } from "./SortBy";
+import { Units } from "./Units";
 
 const FiltersPanelView = styled.div`  
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-`;
-
-const LeftSide = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr auto auto;
   gap: 1rem;
   width: 50%;
 `;
@@ -23,10 +18,10 @@ interface Props {
 export const FiltersPanel = (props: Props) => {
   return (
     <FiltersPanelView>
-      <LeftSide>
         <Search />
         <Filter continents={props.continents} />
-      </LeftSide>
+        <SortBy />
+        <Units />
     </FiltersPanelView>
   );
 };
