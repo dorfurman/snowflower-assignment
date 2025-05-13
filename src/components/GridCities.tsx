@@ -49,7 +49,7 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
 export const GridCities = () => {
   const { data, isLoading, isError } = useQuery<CitiesData>({
     queryKey: ["cities-query"],
-    queryFn: () => fetch("/data/data.json").then((res) => res.json()),
+    queryFn: () => fetch(process.env.PUBLIC_URL + "/data/data.json").then((res) => res.json()),
   });
 
   const { search, continent, sortBy, chosenCity, setChosenCity, userLocation } = useContext(MainContext);
