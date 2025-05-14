@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import { MainContext } from "../../context/MainContext";
 import { useContext, useState } from "react";
 import { Button, Separator } from "./CommonComponents";
+import { LoadingSpinner } from "../../assets/svgs/LoadingSpinner";
 
 const SortByView = styled.div`
   display: flex;
@@ -18,6 +19,14 @@ const ErrorMessage = styled.div`
   color: #dc3545;
   font-size: 0.875rem;
   margin-top: 0.5rem;
+`;
+
+const SmallSpinner = styled(LoadingSpinner)`
+  width: 1em;
+  height: 1em;
+  margin-left: 0.5em;
+  display: inline-block;
+  vertical-align: middle;
 `;
 
 export const SortBy = () => {
@@ -62,7 +71,7 @@ export const SortBy = () => {
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 15000,
           maximumAge: 0
         }
       );
@@ -92,7 +101,7 @@ export const SortBy = () => {
           active={sortBy === "distance"}
           disabled={isRequestingLocation}
         >
-          {isRequestingLocation ? "Getting Location..." : "Distance"}
+          Distance
         </Button>
       </Row>
       {error && <ErrorMessage>{error}</ErrorMessage>}

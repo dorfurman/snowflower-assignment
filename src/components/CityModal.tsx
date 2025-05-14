@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import { MainContext } from "../context/MainContext";
 import { useContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { WeatherData } from "../types/types";
+import { OpenMeteoDailyForecast } from "../types/types";
 import { mockWeatherData } from "../mock/cityForecastMock";
 import { CloseIcon } from "../assets/svgs/CloseIcon";
 import { LoadingSpinner } from "../assets/svgs/LoadingSpinner";
@@ -116,31 +116,20 @@ const DayCard = styled.div<{
   &:hover {
     transform: translateY(-2px);
   }
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.081);
-    z-index: 1;
-  }
 `;
 
 const DayTemp = styled.h2`
   font-size: 24px;
   font-weight: bold;
   margin: 0;
-  color: #ffffff;
+  color: #000000;
   z-index: 1;
 `;
 
 const DayName = styled.p`
   font-size: 14px;
   margin: 0;
-  color: #ffffff;
+  color: #000000;
   z-index: 1;
 `;
 
@@ -173,17 +162,11 @@ const WeatherDetailValue = styled.span`
   font-weight: 500;
 `;
 
-const convertKelvinToUnit = (kelvin: number, unit: "℃" | "℉"): number => {
-  const celsius = kelvin - 273.15;
-  if (unit === "℉") {
-    return (celsius * 9/5) + 32;
-  }
-  return celsius;
-};
-
 export const CityModal = () => {
   const { chosenCity, setChosenCity, units } = useContext(MainContext);
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+
+  const temperatureUnitParam = units === "℉" ? "fahrenheit" : "celsius";
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -191,17 +174,20 @@ export const CityModal = () => {
     }
   };
 
-  const { data, isLoading, isError } = useQuery<WeatherData>({
-    queryKey: ["city-forecast-query", chosenCity?.name],
+  const { data, isLoading, isError } = useQuery<OpenMeteoDailyForecast>({
+    queryKey: ["city-forecast-query", chosenCity?.name, temperatureUnitParam],
     queryFn: () => {
-      const isMockData = true;
+      const isMockData = false;
       if (isMockData) {
-        return new Promise<WeatherData>((resolve) => {
+        return new Promise<OpenMeteoDailyForecast>((resolve) => {
           setTimeout(() => resolve(mockWeatherData), 500);
         });
       } else {
+        const lat = chosenCity?.coords.lat;
+        const lon = chosenCity?.coords.lng;
+        const timezone = "auto";
         return fetch(
-          `https://api.openweathermap.org/data/2.5/onecall?lat=${chosenCity?.coords.lat}&lon=${chosenCity?.coords.lng}&&appid=${process.env.REACT_APP_OPEN_WEATHER_API_KEY}`
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,wind_speed_10m_max,wind_gusts_10m_max,uv_index_max,cloudcover_mean&temperature_unit=${temperatureUnitParam}&timezone=${timezone}`
         ).then((res) => res.json());
       }
     },
@@ -242,75 +228,68 @@ export const CityModal = () => {
 
           <ForecastContainer>
             <DaysContainer>
-              {data?.daily.map((day, index) => (
+              {data?.daily.time.map((date: string, index: number) => (
                 <DayCard
-                  key={`${day.dt}-${index}`}
+                  key={`${date}-${index}`}
                   isSelected={index === selectedDayIndex}
-                  weatherType={day.weather[0]?.description || ""}
-                  temp={convertKelvinToUnit(day.temp.day, units)}
+                  weatherType={data.daily.weathercode[index]?.toString() || ""}
+                  temp={data.daily.temperature_2m_max[index]}
                   units={units}
                   onClick={() => setSelectedDayIndex(index)}
                 >
-                  <DayTemp>{Math.round(convertKelvinToUnit(day.temp.day, units))}{units}</DayTemp>
-                  <DayName>{formatDay(day.dt)}</DayName>
+                  <DayTemp>
+                    {Math.round(data.daily.temperature_2m_max[index])}
+                    {units}
+                  </DayTemp>
+                  <DayName>{formatDay(new Date(date).getTime() / 1000)}</DayName>
                 </DayCard>
               ))}
             </DaysContainer>
 
-            {data?.daily[selectedDayIndex] && (
+            {data?.daily.time[selectedDayIndex] && (
               <WeatherDetailsContainer>
                 <WeatherDetailRow>
-                  <WeatherDetailLabel>Weather</WeatherDetailLabel>
+                  <WeatherDetailLabel>Weather Code</WeatherDetailLabel>
                   <WeatherDetailValue>
-                    {data.daily[selectedDayIndex].weather[0]?.description}
+                    {data.daily.weathercode[selectedDayIndex]}
                   </WeatherDetailValue>
                 </WeatherDetailRow>
                 <WeatherDetailRow>
                   <WeatherDetailLabel>Temperature Range</WeatherDetailLabel>
                   <WeatherDetailValue>
-                    {Math.round(convertKelvinToUnit(data.daily[selectedDayIndex].temp.min, units))}
-                    {units} -{" "}
-                    {Math.round(convertKelvinToUnit(data.daily[selectedDayIndex].temp.max, units))}
+                    {Math.round(data.daily.temperature_2m_min[selectedDayIndex])}
+                    {units} - {Math.round(data.daily.temperature_2m_max[selectedDayIndex])}
                     {units}
                   </WeatherDetailValue>
                 </WeatherDetailRow>
                 <WeatherDetailRow>
-                  <WeatherDetailLabel>Feels Like</WeatherDetailLabel>
+                  <WeatherDetailLabel>Precipitation</WeatherDetailLabel>
                   <WeatherDetailValue>
-                    {Math.round(
-                      convertKelvinToUnit(data.daily[selectedDayIndex].feels_like.day, units)
-                    )}
-                    {units}
+                    {data.daily.precipitation_sum[selectedDayIndex]} mm
                   </WeatherDetailValue>
                 </WeatherDetailRow>
                 <WeatherDetailRow>
-                  <WeatherDetailLabel>Humidity</WeatherDetailLabel>
+                  <WeatherDetailLabel>Wind Speed (max)</WeatherDetailLabel>
                   <WeatherDetailValue>
-                    {data.daily[selectedDayIndex].humidity}%
+                    {data.daily.wind_speed_10m_max[selectedDayIndex]} m/s
                   </WeatherDetailValue>
                 </WeatherDetailRow>
                 <WeatherDetailRow>
-                  <WeatherDetailLabel>Wind Speed</WeatherDetailLabel>
+                  <WeatherDetailLabel>Wind Gusts (max)</WeatherDetailLabel>
                   <WeatherDetailValue>
-                    {data.daily[selectedDayIndex].wind_speed} m/s
+                    {data.daily.wind_gusts_10m_max[selectedDayIndex]} m/s
                   </WeatherDetailValue>
                 </WeatherDetailRow>
                 <WeatherDetailRow>
-                  <WeatherDetailLabel>Cloud Coverage</WeatherDetailLabel>
+                  <WeatherDetailLabel>Cloud Cover (mean)</WeatherDetailLabel>
                   <WeatherDetailValue>
-                    {data.daily[selectedDayIndex].clouds}%
+                    {data.daily.cloudcover_mean[selectedDayIndex]}%
                   </WeatherDetailValue>
                 </WeatherDetailRow>
                 <WeatherDetailRow>
-                  <WeatherDetailLabel>UV Index</WeatherDetailLabel>
+                  <WeatherDetailLabel>UV Index (max)</WeatherDetailLabel>
                   <WeatherDetailValue>
-                    {data.daily[selectedDayIndex].uvi}
-                  </WeatherDetailValue>
-                </WeatherDetailRow>
-                <WeatherDetailRow>
-                  <WeatherDetailLabel>Precipitation Chance</WeatherDetailLabel>
-                  <WeatherDetailValue>
-                    {Math.round(data.daily[selectedDayIndex].pop * 100)}%
+                    {data.daily.uv_index_max[selectedDayIndex]}
                   </WeatherDetailValue>
                 </WeatherDetailRow>
               </WeatherDetailsContainer>

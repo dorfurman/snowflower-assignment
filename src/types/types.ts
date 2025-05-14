@@ -1,3 +1,7 @@
+export interface CitiesData {
+  cities: City[];
+}
+
 export interface City {
   name: string;
   country: string;
@@ -11,108 +15,34 @@ export interface City {
     };
 }
 
-export interface CitiesData {
-  cities: City[];
-}
-
-export interface WeatherData {
-  lat: number;
-  lon: number;
+export interface OpenMeteoDailyForecast {
+  latitude: number;
+  longitude: number;
+  generationtime_ms: number;
+  utc_offset_seconds: number;
   timezone: string;
-  timezone_offset: number;
-  current: CurrentWeather;
-  minutely: MinutelyWeather[];
-  hourly: HourlyWeather[];
-  daily: DailyWeather[];
-  alerts?: Alert[];
-}
-
-interface CurrentWeather {
-  dt: number;
-  sunrise: number;
-  sunset: number;
-  temp: number;
-  feels_like: number;
-  pressure: number;
-  humidity: number;
-  dew_point: number;
-  uvi: number;
-  clouds: number;
-  visibility: number;
-  wind_speed: number;
-  wind_deg: number;
-  weather: WeatherCondition[];
-  rain?: Rain;
-}
-
-interface MinutelyWeather {
-  dt: number;
-  precipitation: number;
-}
-
-interface HourlyWeather {
-  dt: number;
-  temp: number;
-  feels_like: number;
-  pressure: number;
-  humidity: number;
-  dew_point: number;
-  uvi: number;
-  clouds: number;
-  visibility: number;
-  wind_speed: number;
-  wind_deg: number;
-  wind_gust: number;
-  weather: WeatherCondition[];
-  pop: number;
-}
-
-interface DailyWeather {
-  dt: number;
-  sunrise: number;
-  sunset: number;
-  moonrise: number;
-  moonset: number;
-  moon_phase: number;
-  temp: Temperature;
-  feels_like: Temperature;
-  pressure: number;
-  humidity: number;
-  dew_point: number;
-  wind_speed: number;
-  wind_deg: number;
-  weather: WeatherCondition[];
-  clouds: number;
-  pop: number;
-  rain: number;
-  uvi: number;
-}
-
-interface Temperature {
-  day: number;
-  min: number;
-  max: number;
-  night: number;
-  eve: number;
-  morn: number;
-}
-
-interface WeatherCondition {
-  id: number;
-  main: string;
-  description: string;
-  icon: string;
-}
-
-interface Rain {
-  '1h': number;
-}
-
-interface Alert {
-  sender_name: string;
-  event: string;
-  start: number;
-  end: number;
-  description: string;
-  tags: string[];
+  timezone_abbreviation: string;
+  elevation: number;
+  daily: {
+    time: string[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+    precipitation_sum: number[];
+    weathercode: number[];
+    wind_speed_10m_max: number[];
+    wind_gusts_10m_max: number[];
+    uv_index_max: number[];
+    cloudcover_mean: number[];
+  };
+  daily_units: {
+    temperature_2m_max: string;
+    temperature_2m_min: string;
+    precipitation_sum: string;
+    wind_speed_10m_max: string;
+    wind_gusts_10m_max: string;
+    uv_index_max: string;
+    cloudcover_mean: string;
+    time: string;
+    weathercode: string;
+  };
 }
